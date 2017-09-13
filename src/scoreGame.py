@@ -62,7 +62,7 @@ def getPoints2Players(player1Cards, player2Cards):
 
     # When both players have valid hands
     if p1ValidHands and p2ValidHands:
-        layerPoints = sum([1 if x else -1 for x in winnerHand])
+        layerPoints = sum([1 if x[0] and not x[1] else -1 if x[1] and not x[0] else 0 for x in winnerHand])
         # Scoop case
         if layerPoints == 3:
             layerPoints = layerPoints + 3
@@ -113,8 +113,9 @@ def areValidHands(hands):
     bottomHigher = higherHand(hands[0],hands[1])
     middleHigher = higherHand(hands[1],hands[2])
 
-    if bottomHigher and middleHigher:
-        return True
+    if bottomHigher[0] and not bottomHigher[1]:
+        if middleHigher[0] and not middleHigher[1]:
+            return True
     return False
 
 
@@ -122,12 +123,18 @@ def areValidHands(hands):
 def higherHand(firstHand, secondHand):
     # Check if the first hand is higher more than the second hand
     if firstHand[0] > secondHand[0]:
-        return True
+        return [True, False]
     elif firstHand[0] == secondHand[0]:
         difference = [i-j for i,j in zip(firstHand[1], secondHand[1]) if i-j != 0]
-        if difference and difference[0] > 0:
-            return True
-    return False
+        if difference:
+            if difference[0] > 0:
+                return [True, False]
+            else:
+                return [False, True]
+        # Both hands completely equal
+        else:
+            return [True, True]
+    return [False, True]
 
 
 # Function returns the 3 hands played in the 3 layers
