@@ -10,7 +10,7 @@ The application also compares two players together and calculates the points
 import sys
 import numpy as np
 import cv2 as cv
-import scoring as scr
+import scoreGame as scr
 
 ####################### MODULE VARIABLES ###################################
 # Retrieve this module
@@ -77,14 +77,3 @@ if __name__ == '__main__':
     # Scale image
     scale = 0.2
     #img = cv.resize(imgOrig,None,fx=scale,fy=scale,interpolation=cv.INTER_AREA)
-
-    # Get the cards values
-    #getCards_Template(img)
-
-    # Create a vector of cards
-    cards = [(2,'spades'),(3,'spades'),(4,'spades'),(5,'spades'),(14,'spades'),
-             (10,'clubs'),(6,'spades'),(10,'diamonds'),(9,'diamonds'),(9,'clubs'),
-             (5,'spades'),(5,'hearts'),(14,'clubs')]
-
-    # Call the combination Function
-    scr.scoreHand(cards)
