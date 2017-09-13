@@ -29,7 +29,108 @@ hands = ['High Card', 'Pair', 'Two Pairs', 'Three Of A Kind','Straight',
          'Flush', 'Full House', 'Poker', 'Straight Flush', 'Royal Flush']
 
 
-# Function scores the 13-cards hand
+# Get points for 2 or 3 players
+def getPoints(player1Cards, player2Cards, player3Cards=None):
+    # Case with 2 players
+    if player3Cards is None:
+        return getPoints2Players(player1Cards, player2Cards)
+    # Case with 3 players
+    g12 = getPoints2Players(player1Cards, player2Cards)
+    g13 = getPoints2Players(player1Cards, player3Cards)
+    g23 = getPoints2Players(player2Cards, player3Cards)
+    return [g12[0]+g13[0], g12[1]+g23[0], g13[1]+g23[1]]
+
+
+def getPoints2Players(player1Cards, player2Cards):
+    # Get the played hands for both players
+    p1Hands = getPlayedHands(player1Cards)
+    p2Hands = getPlayedHands(player2Cards)
+
+    # Check if the hands are valid
+    p1ValidHands = areValidHands(p1Hands)
+    p2ValidHands = areValidHands(p2Hands)
+
+    # Check higher hand for each layer
+    bottomHigher = higherHand(p1Hands[0],p2Hands[0])
+    middleHigher = higherHand(p1Hands[1],p2Hands[1])
+    topHigher = higherHand(p1Hands[2],p2Hands[2])
+    winnerHand = [bottomHigher, middleHigher, topHigher]
+
+    # If both players mis-set, they both get 0 points
+    if not p1ValidHands and not p2ValidHands:
+        return [0,0]
+
+    # When both players have valid hands
+    if p1ValidHands and p2ValidHands:
+        layerPoints = sum([1 if x else -1 for x in winnerHand])
+        # Scoop case
+        if layerPoints == 3:
+            layerPoints = layerPoints + 3
+    # Mis-set cases
+    elif p1ValidHands and not p2ValidHands:
+        layerPoints = 6
+    else:
+        layerPoints = -6
+
+    # Count the hands points for both players
+    if p1ValidHands:
+        p1HandsPoints = getHandsPoints(p1Hands)
+    else:
+        p1HandsPoints = 0
+    if p2ValidHands:
+        p2HandsPoints = getHandsPoints(p2Hands)
+    else:
+        p2HandsPoints = 0
+
+    # Calculate the total points
+    totalPoints = layerPoints + p1HandsPoints - p2HandsPoints
+    # Return the results
+    return [totalPoints, -totalPoints]
+
+
+# Compute the points from the hands played
+def getHandsPoints(hands):
+    # Points system
+    bottomPointsLookup = [0, 0, 0, 0, 2, 4,  6, 10, 15, 25]
+    middlePointsLookup = [0, 0, 0, 2, 4, 8, 16, 20, 30, 50]
+
+    bottomPoints = bottomPointsLookup[hands[0][0]]
+    middlePoints = middlePointsLookup[hands[1][0]]
+    # Top hand is a Pair
+    if hands[2][0] == 1:
+        topPoints = max(0, hands[2][1][0] - 5)      # 66 gives 1 point
+    # Top hand is a Three of a Kind
+    elif hands[2][0] ==3:
+        topPoints = hands[2][1][0] + 8              # 222 gives 10 points
+    else:
+        topPoints = 0
+    return bottomPoints + middlePoints + topPoints
+
+
+# Check if the hands played are valid
+def areValidHands(hands):
+    # Check that bottom hand is higher1 than middle hand
+    bottomHigher = higherHand(hands[0],hands[1])
+    middleHigher = higherHand(hands[1],hands[2])
+
+    if bottomHigher and middleHigher:
+        return True
+    return False
+
+
+# Check if the first hand is larger than the second
+def higherHand(firstHand, secondHand):
+    # Check if the first hand is higher more than the second hand
+    if firstHand[0] > secondHand[0]:
+        return True
+    elif firstHand[0] == secondHand[0]:
+        difference = [i-j for i,j in zip(firstHand[1], secondHand[1]) if i-j != 0]
+        if difference and difference[0] > 0:
+            return True
+    return False
+
+
+# Function returns the 3 hands played in the 3 layers
 def getPlayedHands(cards):
     # Break the hand in the individual hands
     bottomCards = sorted(cards[:5], key=lambda card: card[0], reverse=True)
@@ -40,7 +141,9 @@ def getPlayedHands(cards):
     bottomHand = getHand(bottomCards)
     middleHand = getHand(middleCards)
     topHand = getHand(topCards)
-    return bottomHand, middleHand, topHand
+
+    return [bottomHand, middleHand, topHand]
+
 
 def getHand(cards):
     # Retrieve array of values and array of suits
@@ -96,7 +199,6 @@ def getHand(cards):
         return [8, valStraight]
     # Royal Flush (9)
     return [9, 14]
-
 
 
 ###################### CHECK SUB-COMBINATIONS ################################
