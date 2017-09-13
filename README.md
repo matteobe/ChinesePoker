@@ -27,6 +27,22 @@ The game begins with each player having 5 cards which he can place wherever he w
 After this initial phase we go around the table (clockwise, counter-clockwise) and each player picks 3 cards from the deck and places 2 cards in the "pyramid" and one card is discarded.
 After 4 rounds around the table, the game ends.
 
+### Fantasy
+A player that is able to place a combination in the top row worth more than a pair of Jacks reaches "Fantasy"-mode
+
+When a player is in "Fantasy"-mode he receives 14 cards at the beginnig of the game and can prepare his "pyramid". One of the 14 cards must be discarded. 
+
+The other players continue playing, as if the player in "Fantasy"-mode is present. 
+
+#### Special combinations
+If a player is able to place a: 
+ 
+* Poker in the bottom hand
+* Three of a kind in the top hand
+
+or combinations worth more, the player remains in "Fantasy"-mode.
+
+
 ## Calculate points
 The points are calculated by comparing two players "pyramid". Each level of the pyramid is won by having the better hand. 
 
@@ -36,7 +52,14 @@ Furthermore, the hands generate points as indicated in the following table:
 
 | Hand      | Bottom | Middle | Top   |
 | --------- |:------:|:------:|:------:|
-| Pair (66) | 0 | 0 | 1 |
+| Pair | 0 | 0 | 1 (66) |
+| Tris | 0 | 2 | 10 (222) |
+| Straight | 2 | 4 | - |
+| Flush | 4 | 8 | - |
+| Full House | 6 | 16 | - |
+| Poker | 10 | 20 | - |
+| Straight Flush | 15 | 30 | - |
+| Royal Flush | 25 | 50 | - |
 
 
 
