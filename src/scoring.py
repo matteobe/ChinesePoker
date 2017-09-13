@@ -43,26 +43,20 @@ def scoreSetting(cards):
     # Retrieve array of values and array of suits
     values = [card[0] for card in cards]
     suits = [card[1] for card in cards]
-    valuesDifference = [abs(j-i) for i,j in zip(values[:-1], values[1:])]
+    valuesFrequency = Counter(values).most_common()     # Cards frequency
 
-    # Get cards values and their frequency
-    valuesFrequency = Counter(values).most_common()
-
-    # Some important boolean variables
-    numDiff0 = valuesDifference.count(0)
-    diffAll1 = all(x == 1 for x in valuesDifference)
-    suitsSame = all(suit == suits[0] for suit in suits)
-
+    # Use an ID to identify the hands:
+    #   High Card (1), Pair (2), Two Pairs (3), Three of a Kind (4),
+    #   Straight (5), Flush (6), Full House (7), Poker (8),
+    #   Straight Flush (9), Royal Flush (10)
     haveStraight, maxValue = getStraight(values)
     print(haveStraight)
     print(maxValue)
 
-
-
-###################### GET SUB-COMBINATIONS ##################################
+###################### CHECK SUB-COMBINATIONS ################################
 # Assumption that a combination is made up of maximum 5 cards
 
-# Return the Peirs cards
+# Return the Pairs cards
 def getPairs(values):
     pairs = [x for x, y in values if y == 2]
     if not pairs:
@@ -90,31 +84,39 @@ def getPoker(values):
 def getStraight(values):
     # Possibility of Ace being valued at 1
     if 14 in values:
-        valuesLow = sorted([x if x != aceValue else 1 for x in values], reverse=True)
+        valuesLow = sorted([x if x != 14 else 1 for x in values], reverse=True)
         if isStraight(valuesLow):
             return True, valuesLow[0]
 
-    # Check the combination for a straight
     if isStraight(values):
         return True, values[0]
     else:
         return False, []
-
-# Return the Flush cards
-def getFlush(suits):
-
 
 # Function to determine is difference is all 1
 def isStraight(values):
     difference = [abs(j-i) for i,j in zip(values[:-1], values[1:])]
     return all(x == 1 for x in difference)
 
+# Return the Flush cards
+def getFlush(values, suits):
+    # Check that we have at least 5 cards
+    if len(suits) != 5
+        return False, []
+
+    # Retrieve first suit and compare with the rest
+    if all(suit == suits[0] for suit in suits):
+        return True, values
+    else:
+        False, []
+
+
 ####################### CARDS FROM DECKS #####################################
 # Function generates a 52 cards deck
 def getCardsDeck():
     # Aces default value is 14, changed to 1 only when used in a straight
     values = list(range(2,15))
-    suits = [u'clubs','diamonds','hearts','spades']
+    suits = ['clubs','diamonds','hearts','spades']
 
     return [card for card in itertools.product(values,suits)]
 
