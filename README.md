@@ -27,5 +27,16 @@ The game begins with each player having 5 cards which he can place wherever he w
 After this initial phase we go around the table (clockwise, counter-clockwise) and each player picks 3 cards from the deck and places 2 cards in the "pyramid" and one card is discarded.
 After 4 rounds around the table, the game ends.
 
+## Calculate points
+The points are calculated by comparing two players "pyramid". Each level of the pyramid is won by having the better hand. 
+
+For each level of the "pyramid" won, the player gets 1 point. Additionally, if a player wins all three levels he *scoops* his opponent and gets a 3 point bonus.
+
+Furthermore, the hands generate points as indicated in the following table:
+
+| Hand      | Bottom | Middle | Top   |
+| --------- |:------:|:------:|:------:|
+| Pair (66) | 0 | 0 | 1 |
+
 
 
