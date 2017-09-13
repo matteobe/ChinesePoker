@@ -22,40 +22,85 @@
 
 import itertools
 import random
-import numpy as np
-from time import time as tic
 from collections import Counter
 
+# Possible hands
+hands = ['High Card', 'Pair', 'Two Pairs', 'Three Of A Kind','Straight',
+         'Flush', 'Full House', 'Poker', 'Straight Flush', 'Royal Flush']
+
+
 # Function scores the 13-cards hand
-def scoreHand(cards):
+def getPlayedHands(cards):
     # Break the hand in the individual hands
-    bottomHand = sorted(cards[:5], key=lambda card: card[0], reverse=True)
-    middleHand = sorted(cards[5:10], key=lambda card: card[0], reverse=True)
-    topHand = sorted(cards[10:], key=lambda card: card[0], reverse=True)
+    bottomCards = sorted(cards[:5], key=lambda card: card[0], reverse=True)
+    middleCards = sorted(cards[5:10], key=lambda card: card[0], reverse=True)
+    topCards = sorted(cards[10:], key=lambda card: card[0], reverse=True)
 
-    hand = bottomHand
+    # Score the three hands
+    bottomHand = getHand(bottomCards)
+    middleHand = getHand(middleCards)
+    topHand = getHand(topCards)
+    return bottomHand, middleHand, topHand
 
-    print(hand)
-    scoreSetting(hand)
-
-
-def scoreSetting(cards):
+def getHand(cards):
     # Retrieve array of values and array of suits
     values = [card[0] for card in cards]
     suits = [card[1] for card in cards]
     valuesFrequency = Counter(values).most_common()     # Cards frequency
 
+    # First check if we have a pair (Pair, Two Pairs, Full House)
+    bPair, valPair = getPairs(valuesFrequency)
+    bThree, valThree = getThreeOfAKind(valuesFrequency)
+    bPoker, valPoker = getPoker(valuesFrequency)
+    bStraight, valStraight = getStraight(values)
+    bFlush, valFlush = getFlush(values, suits)
+
     # Use an ID to identify the hands:
-    #   High Card (1), Pair (2), Two Pairs (3), Three of a Kind (4),
-    #   Straight (5), Flush (6), Full House (7), Poker (8),
-    #   Straight Flush (9), Royal Flush (10)
-    haveStraight, maxValue = getStraight(values)
-    print(haveStraight)
-    print(maxValue)
+    #   High Card (0), Pair (1), Two Pairs (2), Three of a Kind (3),
+    #   Straight (4), Flush (5), Full House (6), Poker (7),
+    #   Straight Flush (8), Royal Flush (9)
+    #
+    # High Card (0)
+    if not bPair and not bThree and not bPoker and not bStraight and not bFlush:
+        return [0, values]
+    # Pair (1), Two Pairs (2)
+    if bPair and not bThree:
+        # Retrieve the high cards
+        highCards = [x for x in values if x not in valPair]
+        if len(valPair) == 1:
+            valPair.extend(highCards)
+            return [1, valPair]
+        else:
+            valPair.extend(highCards)
+            return [2, valPair]
+    # Three of a Kind (3)
+    if bThree and not bPair:
+        highCards = [x for x in values if x not in valThree]
+        valThree.extend(highCards)
+        return [3, valThree]
+    # Straight (4)
+    if bStraight and not bFlush:
+        return [4, valStraight]
+    # Flush (5)
+    if bFlush and not bStraight:
+        return [5, values]
+    # Full House (6)
+    if bPair and bThree:
+        valFull = [valPair, valThree]
+        return [6, valFull]
+    # Poker (7)
+    if bPoker:
+        return [7, valPoker]
+    # Straight Flush (8)
+    if bStraight and bFlush and valStraight != 14:
+        return [8, valStraight]
+    # Royal Flush (9)
+    return [9, 14]
+
+
 
 ###################### CHECK SUB-COMBINATIONS ################################
 # Assumption that a combination is made up of maximum 5 cards
-
 # Return the Pairs cards
 def getPairs(values):
     pairs = [x for x, y in values if y == 2]
@@ -101,14 +146,14 @@ def isStraight(values):
 # Return the Flush cards
 def getFlush(values, suits):
     # Check that we have at least 5 cards
-    if len(suits) != 5
+    if len(suits) != 5:
         return False, []
 
     # Retrieve first suit and compare with the rest
     if all(suit == suits[0] for suit in suits):
         return True, values
     else:
-        False, []
+        return False, []
 
 
 ####################### CARDS FROM DECKS #####################################
