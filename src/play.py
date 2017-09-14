@@ -3,6 +3,7 @@
 #
 
 import scoreGame as scr
+import displayGame as dspl
 
 
 if __name__ == '__main__':
@@ -16,7 +17,9 @@ if __name__ == '__main__':
     player2 = [(11,'hearts'),(10,'hearts'),(2,'hearts'),(3,'hearts'),(4,'hearts'),
                (13,'clubs'),(13,'spades'),(7,'clubs'),(7,'hearts'),(4,'clubs'),
                (4,'hearts'),(4,'clubs'),(7,'spades')]
-               
-    # Call the combination Function
+
+    # Calculate the points for the players
     points = scr.getPoints(player1, player2, player1)
     print(points)
+
+    dspl.displayHands(player1)
