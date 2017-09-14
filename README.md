@@ -62,11 +62,11 @@ The hands generate points as indicated in the following table:
 
 | Hand      | Bottom | Middle | Top   |
 | --------- |:------:|:------:|:------:|
-| Pair | 0 | 0 | 1 (6), 2 (7),... |
-| Three Of A Kind | 0 | 2 | 10 (2), 11 (3),... |
+| Pair | 0 | 0 | 1 (6), 2 (7), ... |
+| Three Of A Kind | 0 | 2 | 10 (2), 11 (3), ... |
 | Straight | 2 | 4 | - |
 | Flush | 4 | 8 | - |
-| Full House | 6 | 16 | - |
+| Full House | 6 | 12 | - |
 | Poker | 10 | 20 | - |
 | Straight Flush | 15 | 30 | - |
 | Royal Flush | 25 | 50 | - |
